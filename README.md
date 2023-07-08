@@ -1,6 +1,9 @@
+[![Docker publish](https://github.com/pgschk/foundryvtt-containerized/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/pgschk/foundryvtt-containerized/actions/workflows/docker-publish.yml)
+[![ghcr publish](https://github.com/pgschk/foundryvtt-containerized/actions/workflows/ghcr-publish.yml/badge.svg)](https://github.com/pgschk/foundryvtt-containerized/actions/workflows/ghcr-publish.yml)
+
 # FoundryVTT Container
 
-This project is not affiliated with [FoundryVTT](foundryvtt.com)and  is a pure containerization project that provides a container capable of running [FoundryVTT](foundryvtt.com), but **it does not container FoundryVTT!**
+This project is not affiliated with [FoundryVTT](foundryvtt.com) and is a pure containerization project that provides a container capable of running [FoundryVTT](foundryvtt.com), but **it does not contain FoundryVTT!**
 
 In order to start this container for the first time, you need to provide a timed download URL provided through your [FoundryVTT](foundryvtt.com) account. Visit https://foundryvtt.com/purchase/ to purchase a license key for this excellent software.
 
