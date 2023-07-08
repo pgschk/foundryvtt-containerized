@@ -1,0 +1,11 @@
+version: '3'
+services:
+  foundryvtt:
+    image: pgschk/foundryvtt-containerized:latest
+    volumes:
+      - ./install:/usr/src/app/foundryvtt
+      - ./data:/data/foundryvtt
+    ports:
+      - 8080:8080
+    environment:
+      - FOUNDRYVTT_DOWNLOAD_URL=${FOUNDRYVTT_DOWNLOAD_URL}

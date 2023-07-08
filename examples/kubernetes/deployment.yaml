@@ -1,0 +1,81 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: foundryvtt
+  labels:
+    app: foundryvtt
+spec:
+  selector:
+    app: foundryvtt
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+    name: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: foundryvtt
+spec:
+  selector:
+    matchLabels:
+      app: foundryvtt
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: foundryvtt
+    spec:
+      containers:
+      - name: foundryvtt
+        image: pgschk/foundryvtt-containerized:latest
+        env:
+          - name: FOUNDRYVTT_DOWNLOAD_URL
+            value: "<your-timed-download-url>"
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+          - name: foundryvtt-data
+            mountPath: /data/foundryvtt
+          - name: foundryvtt-install
+            mountPath: /usr/src/app/foundryvtt
+        resources:
+          requests:
+            cpu: 150m
+            memory: 500Mi
+          limits:
+            cpu: 1000m
+            memory: 2000Mi
+      volumes:
+      - name: foundryvtt-data
+        persistentVolumeClaim:
+          claimName: foundryvtt-data
+      - name: foundryvtt-install
+        persistentVolumeClaim:
+          claimName: foundryvtt-install
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: foundryvtt-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: foundryvtt-install
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+
