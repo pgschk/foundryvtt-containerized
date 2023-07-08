@@ -2,7 +2,7 @@
 ## Entrypoint script for FoundryVTT
 
 FOUNDRYVTT_DATA_PATH=${FOUNDRYVTT_DATA_PATH:=/data/foundryvtt}
-FOUNDRYVTT_PORT=${FOUNDRYVTT_PORT:=8080}
+FOUNDRYVTT_LISTEN_PORT=${FOUNDRYVTT_LISTEN_PORT:=8080}
 FOUNDRYVTT_INSTALL_PATH=${FOUNDRYVTT_INSTALL_PATH:=/usr/src/app/foundryvtt}
 
 echo "THIS CONTAINERIZATION PROJECT IS NOT AFFILIATED WITH FoundryVTT.com and DOES NOT CONTAIN FoundryVTT ITSELF!"
@@ -60,4 +60,4 @@ main () {
 main
 
 ## Start FoundryVTT
-exec /usr/local/bin/node ${FOUNDRYVTT_INSTALL_PATH}/resources/app/main.js --dataPath=${FOUNDRYVTT_DATA_PATH} --noupnp --port=${FOUNDRYVTT_PORT}
+exec /usr/local/bin/node ${FOUNDRYVTT_INSTALL_PATH}/resources/app/main.js --dataPath=${FOUNDRYVTT_DATA_PATH} --noupnp --port=${FOUNDRYVTT_LISTEN_PORT}
