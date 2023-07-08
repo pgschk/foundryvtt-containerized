@@ -10,7 +10,7 @@ In order to start this container for the first time, you need to provide a timed
 
 ## What does it do?
 
-This container provides the necessary [nodejs](https://nodejs.com) environment for FoundryVTT. You will need to provide a valid timed download URL for FoundryVTT through the environment variable
+This container provides the necessary [nodejs](https://nodejs.org/) environment for FoundryVTT. You will need to provide a valid timed download URL for FoundryVTT through the environment variable
 `FOUNDRYVTT_DOWNLOAD_URL` as described in the examples when you first start the container. This will cause it to download FoundryVTT from that URL and store it. On subsequent launches you can remove this environment variable, or leave it, it does not cause problems.
 
 ## Obtaining the TIMED DOWNLOAD URL
