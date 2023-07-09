@@ -55,3 +55,5 @@ Visit http://localhost:8080/ to confirm the FoundryVTT Terms of Service and ente
 ```
 kubectl apply -n <target namespace> -f examples/kubernetes/deployment.yaml
 ```
+
+Or use the Helm chart at https://github.com/pgschk/helm-charts/tree/main/charts/foundryvtt-containerized
