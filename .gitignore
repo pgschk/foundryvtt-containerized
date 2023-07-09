@@ -1,2 +1,4 @@
 examples/docker-compose/install
 examples/docker-compose/data
+data/
+install/
