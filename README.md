@@ -1,5 +1,6 @@
 [![Docker publish](https://github.com/pgschk/foundryvtt-containerized/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/pgschk/foundryvtt-containerized/actions/workflows/docker-publish.yml)
 [![ghcr publish](https://github.com/pgschk/foundryvtt-containerized/actions/workflows/ghcr-publish.yml/badge.svg)](https://github.com/pgschk/foundryvtt-containerized/actions/workflows/ghcr-publish.yml)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/pgschk/foundryvtt-containerized)
 
 # FoundryVTT Container
 
