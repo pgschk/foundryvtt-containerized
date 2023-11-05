@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - 'main'
-      - trivy
   pull_request:
     branches:
       - 'main'
