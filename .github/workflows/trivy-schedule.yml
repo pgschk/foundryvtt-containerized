@@ -1,7 +1,7 @@
-name: Daily Trivy Vulnerability Scan (CRITICAL,HIGH)
+name: Daily Vulnerability Scan
 on:
   schedule:
-    - cron: '30 * * * *'
+    - cron: '40 15 * * *'
 jobs:
   scan:
     name: Daily Trivy Vulnerability Scan (CRITICAL,HIGH)
