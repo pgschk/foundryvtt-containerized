@@ -1,4 +1,4 @@
-name: Trivy Vulnerability Scan
+name: Daily Trivy Vulnerability Scan (CRIT,High)
 on:
   schedule:
     - cron: '10 * * * *'
