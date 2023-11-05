@@ -1,0 +1,28 @@
+name: Trivy Vulnerability Scan
+
+on:
+  push:
+    branches:
+      - 'main'
+      - trivy
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  scan:
+    name: Trivy Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull docker image
+        run: docker pull pgschk/foundryvtt-containerized
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'pgschk/foundryvtt-containerized'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH,MEDIUM'
