@@ -12,7 +12,7 @@ jobs:
             curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
       - run:
           name: Scan the image with trivy
-          command: trivy image --no-progress --exit-code 1 --exit-on-eol 2 --vuln-type HIGH,CRITICAL pgschk/foundryvtt-containerized:latest
+          command: trivy image --no-progress --exit-code 1 --exit-on-eol 2 --severity HIGH,CRITICAL pgschk/foundryvtt-containerized:latest
 workflows:
   scan:
     triggers:
