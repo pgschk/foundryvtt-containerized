@@ -1,23 +1,19 @@
 version: 2.1
 jobs:
-  build:
+  scan:
     docker:
       - image: docker:stable-git
     steps:
-      - checkout
       - setup_remote_docker
-      - run:
-          name: Build image
-          command: docker build -t pgschk/foundryvtt-containerized:${CIRCLE_SHA1} .
       - run:
           name: Install trivy
           command: |
             apk add --update-cache --upgrade curl
             curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
       - run:
-          name: Scan the local image with trivy
-          command: trivy image pgschk/foundryvtt-containerized:${CIRCLE_SHA1}
+          name: Scan the image with trivy
+          command: trivy image --no-progress --exit-code 1 --exit-on-eol 2 pgschk/foundryvtt-containerized:latest
 workflows:
   release:
     jobs:
-      - build
+      - scan
