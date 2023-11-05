@@ -1,4 +1,4 @@
-FROM node:20-alpine@sha256:37750e51d61bef92165b2e29a77da4277ba0777258446b7a9c99511f119db096
+FROM node:20-alpine@sha256:807e66e2bee193961c9642bb1157d77a61747bf76737ca786da45b10749dcb42
 
 WORKDIR /usr/src/app
 ADD app/entrypoint.sh entrypoint.sh
