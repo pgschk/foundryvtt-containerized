@@ -1,4 +1,10 @@
 version: 2.1
+
+parameters:
+  run-schedule:
+      type: boolean
+      default: false
+
 jobs:
   trivy-scan:
     docker:
@@ -13,14 +19,9 @@ jobs:
       - run:
           name: Scan the image with trivy
           command: trivy image --no-progress --exit-code 1 --exit-on-eol 2 --severity HIGH,CRITICAL pgschk/foundryvtt-containerized:latest
+
 workflows:
   scan:
-    triggers:
-       - schedule:
-          cron: "0 * * * *"
-          filters:
-            branches:
-              only:
-                - main
+    when: << pipeline.parameters.run-schedule >>
     jobs:
       - trivy-scan
