@@ -1,10 +1,10 @@
-name: Daily Trivy Vulnerability Scan (CRIT,High)
+name: Daily Trivy Vulnerability Scan (CRITICAL,HIGH)
 on:
   schedule:
     - cron: '30 * * * *'
 jobs:
   scan:
-    name: Daily Trivy Vulnerability Scan (CRIT,High)
+    name: Daily Trivy Vulnerability Scan (CRITICAL,HIGH)
     runs-on: ubuntu-latest
     steps:
       - name: Run Trivy vulnerability scanner
