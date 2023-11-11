@@ -17,14 +17,14 @@ INSTALL_ID=$(uuidgen)
 TEMPDIR=$(mktemp -d)
 
 function cleanup {
-  echo -e "${FAIL_STRING} Cleaning up..."
+  echo -e "${OK_STRING} Cleaning up..."
   if [ ! -z ${container} ]; then
     echo -e "${OK_STRING} Stopping container ${container}"
     docker stop ${container}
   fi
   echo -e "${OK_STRING} Removing temporary directory"
   rm -R ${TEMPDIR}
-    echo -e "${FAIL_STRING} Done"
+    echo -e "${OK_STRING} Done"
 }
 trap cleanup EXIT
 
