@@ -1,9 +1,10 @@
-name: CI
+name: EmberJS CI
 
 on:
   push:
     branches:
       - main
+      - ember-ci
   pull_request: {}
 
 concurrency:
@@ -18,15 +19,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Change directory
+        run: cd foundry-instructions
       - name: Install Node
         uses: actions/setup-node@v3
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: ./foundry-instructions/package-lock.json
       - name: Install Dependencies
-        run: cd foundry-instructions && npm ci
+        run: npm ci
+        working-directory: foundry-instructions
       - name: Lint
-        run: cd foundry-instructions && npm run lint
+        run: npm run lint
+        working-directory: foundry-instructions
 
   test:
     name: "Test"
@@ -40,7 +46,10 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: ./foundry-instructions/package-lock.json
       - name: Install Dependencies
-        run: cd foundry-instructions && npm ci
+        run: npm ci
+        working-directory: foundry-instructions
       - name: Run Tests
-        run: cd foundry-instructions && npm test
+        run: npm test
+        working-directory: foundry-instructions
