@@ -33,7 +33,7 @@ install_foundryvtt () {
   wget -O foundryvtt.zip ${FOUNDRYVTT_DOWNLOAD_URL}
   if [ $? -ne 0 ]; then
     echo "ERROR: Unable to download FoundryVTT!"
-    exit 1
+    return
   fi
   unzip foundryvtt.zip -d ${FOUNDRYVTT_INSTALL_PATH}
 }
@@ -49,14 +49,13 @@ main () {
   if ! check_foundryvtt_installation; then
     install_foundryvtt
     if ! check_foundryvtt_installation; then
-      cd foundry-instructions/
-      npm install .
-      ember serve --port 8080 --environment=production
+      # Installation did not succeed, display instructions website instead.
+      http-server /usr/src/app/foundry-instructions/
+    else
+      ## Start FoundryVTT
+      exec /usr/local/bin/node ${FOUNDRYVTT_INSTALL_PATH}/resources/app/main.js --dataPath=${FOUNDRYVTT_DATA_PATH} --noupnp --port=${FOUNDRYVTT_LISTEN_PORT}
     fi
   fi
 }
 
 main
-
-## Start FoundryVTT
-exec /usr/local/bin/node ${FOUNDRYVTT_INSTALL_PATH}/resources/app/main.js --dataPath=${FOUNDRYVTT_DATA_PATH} --noupnp --port=${FOUNDRYVTT_LISTEN_PORT}
