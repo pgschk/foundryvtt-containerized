@@ -27,9 +27,7 @@ check_foundryvtt_installation () {
 ## obtained from FoundryVTT.com and provided through ENV $FOUNDRYVTT_DOWNLOAD_URL
 install_foundryvtt () {
   if [ "${FOUNDRYVTT_DOWNLOAD_URL}" = "" ]; then
-    echo "ERROR: Foundry could not be installed, no \$FOUNDRYVTT_DOWNLOAD_URL provided!"
-    echo "Please set environment variable \$FOUNDRYVTT_DOWNLOAD_URL to a TIMED URL you generated through your FoundryVTT.com account."
-    exit 1
+    return
   fi
   echo "Installing FoundryVTT from URL ${FOUNDRYVTT_DOWNLOAD_URL}..."
   wget -O foundryvtt.zip ${FOUNDRYVTT_DOWNLOAD_URL}
@@ -51,8 +49,9 @@ main () {
   if ! check_foundryvtt_installation; then
     install_foundryvtt
     if ! check_foundryvtt_installation; then
-      echo "FATAL: FoundryVTT was not found, even after attempting to install. Make sure you have a valid TIMED URL you generated through your FoundryVTT.com account set as \s$FOUNDRYVTT_DOWNLOAD_URL"
-      exit 1
+      cd foundry-instructions/
+      npm install .
+      ember serve --port 8080 --environment=production
     fi
   fi
 }

@@ -6,8 +6,11 @@
       <h1>Oh no, this is not FoundryVTT 😓</h1>
       <p>This means, that the FoundryVTT installation did not work, or you would see FoundryVTT here.</p>
       <p>The most likely reason for this is, that you did not provide a valid download link using the container environment variable <code>FOUNDRYVTT_DOWNLOAD_URL</code>.</p>
-      <p>When you start this container for the first time, it needs a valid download URL to download and install FoundryVTT. This is necessary because FoundryVTT
-        can not be distributed with this container - it is only a helper to easily install and run FoundryVTT in a container. Make sure you follow these steps:</p>
+      <p>
+        When you start this container for the first time, it needs a valid download URL to download and install FoundryVTT. This is necessary because FoundryVTT
+        can not be distributed with this container - it is only a helper to easily install and run FoundryVTT in a container.
+        Make sure you read through these steps, then follow them when you are prepared:
+      </p>
       <BsAccordion as |acc|>
         <acc.item class="show" @value="1" @title="1. Purchase FoundryVTT">
           <p>
@@ -30,19 +33,68 @@
                 </svg>
               </a>
               and click on the avatar at the top right of the page to display the login dialog. Log in using the credentials you used to purchase FoundryVTT.
-              <img class="rounded mx-auto d-block" src="../assets/foundry-login.png" alt="Foundry Login" />
+              <img class="rounded mx-auto d-block mb-4" src="../assets/foundry-login.png" alt="Foundry Login" />
             </p>
         </acc.item>
         <acc.item @value="3" @title="3. Obtain your timed download URL">
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur ea eos hic neque quia sequi sunt. Amet at atque corporis earum et fugiat illum magnam nisi sapiente voluptatem. Laudantium, quam?
-            <img class="rounded mx-auto d-block" src="../assets/menu.png" alt="Foundry Menu" />
-            <img class="rounded mx-auto d-block" src="../assets/nodejs.png" alt="Select NodeJS" />
-            <img class="rounded mx-auto d-block" src="../assets/timed-url.png" alt="Click TIMED URL" />
+            Click on the menu icon at the top left of the page and choose "Download Software" in the menu:
+            <img class="rounded mx-auto d-block mb-4" src="../assets/menu.png" alt="Foundry Menu" />
+            Now use the "Operating System" drop-down menu and select "Linux/NodeJS":
+            <img class="rounded mx-auto d-block mb-4" src="../assets/nodejs.png" alt="Select NodeJS" />
+            Then click the button "TIMED URL":
+            <img class="rounded mx-auto d-block mb-4" src="../assets/timed-url.png" alt="Click TIMED URL" />
+            A timed download URL for FoundryVTT is now in your clipboard. The URL is only valid for 5 minutes, so you need to quickly complete the next step,
+            or possibly repeat the process when you are ready to complete it quickly.
           </p>
         </acc.item>
         <acc.item @value="4" @title="4. Set FOUNDRYVTT_DOWNLOAD_URL environment variable">
-          <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur ea eos hic neque quia sequi sunt. Amet at atque corporis earum et fugiat illum magnam nisi sapiente voluptatem. Laudantium, quam?  </p>
+          <p>
+            You need to set this timed download URL as the environment variable <code>FOUNDRYVTT_DOWNLOAD_URL</code> for the foundryvtt-containerized container.
+            How you do this depends on how you are trying to run it, but here are a few examples:
+          </p>
+          <h2>Docker</h2>
+          <p>
+            If you are using a simple <code>docker run</code> command to execute the container, use the <code>-e</code> parameter to provide the environment variable:
+          </p>
+          <p>
+            <code class="border d-block p-2">
+              docker run  --user 1000:1000 -p 8080:8080 -v ./data:/data/foundry -v ./install:/usr/src/app/foundryvtt -e FOUNDRYVTT_DOWNLOAD_URL="&lt;your-timed-download-url&gt;" pgschk/foundryvtt-containerized:latest
+            </code>
+          </p>
+          <h2>Docker Compose</h2>
+          <p>
+            For <code>docker compose</code> use
+            <a class="icon-link" href="https://github.com/pgschk/foundryvtt-containerized/blob/main/examples/docker-compose/docker-compose.yaml">
+              this example
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-right-square" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm5.854 8.803a.5.5 0 1 1-.708-.707L9.243 6H6.475a.5.5 0 1 1 0-1h3.975a.5.5 0 0 1 .5.5v3.975a.5.5 0 1 1-1 0V6.707l-4.096 4.096z"/>
+              </svg>
+            </a>. In the same directory as your <code>docker-compose.yml</code> file you will need to create a file called <code>.env</code> in which you provide the timed download url:
+          </p>
+          <p>
+            <code class="border d-block p-2">
+              FOUNDRYVTT_DOWNLOAD_URL=&lt;your-timed-download-url&gt;
+            </code>
+          </p>
+          <h2>Kubernetes</h2>
+          <p>
+            For Kubernetes use
+            <a class="icon-link" href="https://github.com/pgschk/helm-charts/tree/main/charts/foundryvtt-containerized">
+              this Helm chart
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-right-square" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm5.854 8.803a.5.5 0 1 1-.708-.707L9.243 6H6.475a.5.5 0 1 1 0-1h3.975a.5.5 0 0 1 .5.5v3.975a.5.5 0 1 1-1 0V6.707l-4.096 4.096z"/>
+              </svg>
+            </a>.
+            You need to provide your timed download URL with the Helm value <code>foundryVTTDownloadURL</code>:
+          </p>
+          <p>
+            <code class="border d-block p-2">
+              helm repo add pgschk https://helm.gschk.de<br>
+              helm install my-foundryvtt-containerized pgschk/foundryvtt-containerized \<br>
+              &nbsp;&nbsp;--set foundryVTTDownloadURL="&lt;your timed download URL&gt;
+            </code>
+          </p>
         </acc.item>
       </BsAccordion>
     </div>

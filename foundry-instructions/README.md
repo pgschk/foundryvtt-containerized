@@ -12,12 +12,6 @@ You will need the following things properly installed on your computer.
 * [Ember CLI](https://cli.emberjs.com/release/)
 * [Google Chrome](https://google.com/chrome/)
 
-## Installation
-
-* `git clone <repository-url>` this repository
-* `cd foundry-instructions`
-* `npm install`
-
 ## Running / Development
 
 * `ember serve`

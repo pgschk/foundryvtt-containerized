@@ -1,8 +1,8 @@
 {
   "name": "foundry-instructions",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "Small description for foundry-instructions goes here",
+  "description": "A small website with installation instructions for foundryvtt-containerized",
   "repository": "",
   "license": "MIT",
   "author": "",
