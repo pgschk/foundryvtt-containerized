@@ -14,7 +14,6 @@ RUN mkdir -p /usr/src/app/foundryvtt/ /data/foundryvtt/ && \
     chgrp -R 0 /usr/src/app/foundryvtt/ /data/foundryvtt/ && \
     chmod -R u+rwX /usr/src/app/foundryvtt/ /data/foundryvtt/ && \
     chmod -R o+rwX /usr/src/app/foundryvtt/ /data/foundryvtt/
-ADD foundry-instructions/dist foundry-instructions
 RUN npm install http-server -g
 
 USER 1000
