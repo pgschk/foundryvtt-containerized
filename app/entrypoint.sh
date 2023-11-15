@@ -50,6 +50,7 @@ main () {
     install_foundryvtt
     if ! check_foundryvtt_installation; then
       # Installation did not succeed, display instructions website instead.
+      echo "ERROR: FoundryVTT installation failed! Starting webserver to provide instructions."
       http-server /usr/src/app/foundry-instructions/
     else
       ## Start FoundryVTT
