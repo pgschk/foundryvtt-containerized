@@ -10,3 +10,10 @@ commandTests:
     args: ["-v"]
     expectedOutput:
     - "v14"
+fileExistenceTests:
+- name: 'Instructions app index'
+  path: '/usr/src/app/foundry-instructions/index.html'
+  shouldExist: true
+  permissions: '-rw-r--r--'
+  uid: 1000
+  gid: 1000
