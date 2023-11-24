@@ -28,7 +28,7 @@ function cleanup {
 }
 trap cleanup EXIT
 
-docker buildx build --no-cache -t pgschk/foundryvtt-containerized:${INSTALL_ID} ..
+docker buildx build --no-cache -t pgschk/foundryvtt-containerized:${INSTALL_ID} ../..
 
 cd ${TEMPDIR}
 mkdir install data && chown 1000 install data
