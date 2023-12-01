@@ -7,7 +7,8 @@ ADD foundry-instructions foundry-instructions
 RUN cd foundry-instructions && \
     npm install . && \
     ./node_modules/.bin/ember build --environment production && \
-    chown -R 1000:0 /usr/src/app/foundry-instructions/dist
+    chown -R 1000:0 /usr/src/app/foundry-instructions/dist && \
+    chmod -R 0666 /usr/src/app/foundry-instructions/dist
 
 
 FROM node:20-alpine@sha256:${NODE_HASH}
