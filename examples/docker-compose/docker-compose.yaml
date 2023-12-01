@@ -3,10 +3,13 @@ services:
   foundryvtt:
     image: pgschk/foundryvtt-containerized:latest
     volumes:
-      - ./install:/usr/src/app/foundryvtt
-      - ./data:/data/foundryvtt
+      - install:/usr/src/app/foundryvtt
+      - data:/data/foundryvtt
     user: "1000"
     ports:
       - 8080:8080
     environment:
       - FOUNDRYVTT_DOWNLOAD_URL=${FOUNDRYVTT_DOWNLOAD_URL}
+volumes:
+  install:
+  data:
