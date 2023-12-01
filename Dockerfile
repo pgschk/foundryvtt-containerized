@@ -16,9 +16,9 @@ WORKDIR /usr/src/app
 ADD app/entrypoint.sh entrypoint.sh
 COPY --from=builder /usr/src/app/foundry-instructions/dist /usr/src/app/foundry-instructions
 RUN mkdir -p /usr/src/app/foundryvtt/ /data/foundryvtt/ && \
-    chgrp -R 0 /usr/src/app/foundryvtt/ /data/foundryvtt/ && \
-    chmod -R u+rwX /usr/src/app/foundryvtt/ /data/foundryvtt/ && \
-    chmod -R o+rwX /usr/src/app/foundryvtt/ /data/foundryvtt/
+    chown -R 1000:0 /usr/src/app/ /data/foundryvtt/ && \
+    chmod -R u+rwX /usr/src/app/ /data/foundryvtt/ && \
+    chmod -R o+rwX /usr/src/app/ /data/foundryvtt/
 RUN npm install http-server -g
 
 USER 1000
