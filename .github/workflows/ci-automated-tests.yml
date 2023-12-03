@@ -55,6 +55,6 @@ jobs:
 
       - name: Run all tests
         run: |
-          FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE=${{ env.TEST_TAG }} && \
-          FOUNDRYVTT_DOWNLOAD_URL=${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }} && \
+          FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE=${{ env.TEST_TAG }}
+          FOUNDRYVTT_DOWNLOAD_URL=${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }}
           ./tests/tests.sh
