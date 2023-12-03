@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - more-ci
   pull_request:
     types: [opened, reopened]
   workflow_dispatch:
@@ -53,5 +52,6 @@ jobs:
           image: ${{ env.TEST_TAG }}
           config: tests/container-structure-test/tests.yml
 
+      # Run all available tests expecting sucessful installation
       - name: Run all tests
         run: FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE=${{ env.TEST_TAG }} FOUNDRYVTT_DOWNLOAD_URL=${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }} ./tests/tests.sh
