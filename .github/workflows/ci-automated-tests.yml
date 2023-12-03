@@ -24,7 +24,7 @@ jobs:
       - name: Add mask
         run: |
           echo "::add-mask::${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }}"
-          whoami
+          id
       - uses: actions/checkout@v3
 
       # # Workaround: https://github.com/docker/build-push-action/issues/461
