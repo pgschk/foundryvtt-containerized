@@ -54,7 +54,4 @@ jobs:
           config: tests/container-structure-test/tests.yml
 
       - name: Run all tests
-        run: |
-          FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE=${{ env.TEST_TAG }}
-          FOUNDRYVTT_DOWNLOAD_URL=${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }}
-          ./tests/tests.sh
+        run: FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE=${{ env.TEST_TAG }} FOUNDRYVTT_DOWNLOAD_URL=${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }} ./tests/tests.sh
