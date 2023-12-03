@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Get the directory of the script
+script_dir=$(dirname "$(readlink -f "$0")")
+
 # Record start time
 start_time=$(date +%s)
 
@@ -8,7 +11,7 @@ success_count=0
 fail_count=0
 
 # Iterate through subfolders
-for folder in */; do
+for folder in "$script_dir"/*/; do
     folder_name="${folder%/}"
 
     # Check if test.sh exists in the current subfolder
