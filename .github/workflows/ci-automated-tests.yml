@@ -13,7 +13,6 @@ env:
     IMAGE_NAME: pgschk/foundryvtt-containerized
     TEST_TAG: pgschk/foundryvtt-containerized:test
     FOUNDRYVTT_CONTAINERIZED_INSTALL_SUCCESS_EXPECTED: true
-    FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE: ${TEST_TAG}
 concurrency:
   group: ci-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
@@ -55,4 +54,7 @@ jobs:
           config: tests/container-structure-test/tests.yml
 
       - name: Run all tests
-        run: ./tests/tests.sh
+        run: |
+          FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE=${{ env.TEST_TAG }} && \
+          FOUNDRYVTT_DOWNLOAD_URL=${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }} && \
+          ./tests/tests.sh
