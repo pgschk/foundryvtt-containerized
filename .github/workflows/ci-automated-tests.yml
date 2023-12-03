@@ -1,0 +1,26 @@
+name: Automated Testing CI
+
+on:
+  push:
+    branches:
+      - main
+      - more-ci
+  pull_request:
+    types: [opened, reopened]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Add mask
+        run: |
+          echo "::add-mask::${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }}"
+      - uses: actions/checkout@v2
+      - name: Try to write the secret
+        run: echo ${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }}
