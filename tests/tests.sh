@@ -1,5 +1,11 @@
 #!/bin/bash
 
+OK_STRING="\e[42m[OK]\e[0m"
+FAIL_STRING="\e[41m[FAIL]\e[0m"
+
+# Get the directory of the script
+script_dir=$(dirname "$(readlink -f "$0")")
+
 # Record start time
 start_time=$(date +%s)
 
@@ -8,7 +14,7 @@ success_count=0
 fail_count=0
 
 # Iterate through subfolders
-for folder in */; do
+for folder in "$script_dir"/*/; do
     folder_name="${folder%/}"
 
     # Check if test.sh exists in the current subfolder
@@ -21,10 +27,10 @@ for folder in */; do
         echo "Folder: $folder_name"
 
         if [ $exit_status -eq 0 ]; then
-            echo "Status: Success"
+            echo -e "${OK_STRING} Status: Success"
             ((success_count++))
         else
-            echo "Status: Failure (Exit code: $exit_status)"
+            echo -e "${FAIL_STRING} Status: Failure (Exit code: $exit_status)"
             ((fail_count++))
         fi
 
@@ -48,9 +54,9 @@ echo "Total run time: $total_time seconds"
 
 # Exit with appropriate status
 if [ $fail_count -gt 0 ]; then
-    echo "Some test scripts failed."
+    echo -e "${FAIL_STRING} Some test scripts failed."
     exit 1
 else
-    echo "All tests executed successfully."
+    echo -e "${OK_STRING} All tests executed successfully."
     exit 0
 fi
