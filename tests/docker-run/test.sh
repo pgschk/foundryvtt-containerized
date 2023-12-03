@@ -32,7 +32,7 @@ docker buildx build --no-cache -t pgschk/foundryvtt-containerized:${INSTALL_ID} 
 
 cd ${TEMPDIR}
 mkdir install data && chown 1000 install data
-container=$(docker run -d --rm --user 1000:1000 -p 8080:8080 -v ${TEMPDIR}/data:/data/foundry -v ${TEMPDIR}/install:/usr/src/app/foundryvtt -e FOUNDRYVTT_DOWNLOAD_URL="sdas" pgschk/foundryvtt-containerized:${INSTALL_ID})
+container=$(docker run -d --rm --user 1000:1000 -p 8080:8080 -v ${TEMPDIR}/data:/data/foundry -v ${TEMPDIR}/install:/usr/src/app/foundryvtt -e FOUNDRYVTT_DOWNLOAD_URL="${FOUNDRYVTT_DOWNLOAD_URL}" pgschk/foundryvtt-containerized:${INSTALL_ID})
 if [ "$?" -ne "0" ]; then
   echo -e "${FAIL_STRING} Error":
   echo $container
