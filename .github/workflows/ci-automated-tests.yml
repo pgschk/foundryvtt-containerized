@@ -12,6 +12,7 @@ on:
 env:
     IMAGE_NAME: pgschk/foundryvtt-containerized
     TEST_TAG: pgschk/foundryvtt-containerized:test
+    FOUNDRYVTT_CONTAINERIZED_INSTALL_SUCCESS_EXPECTED: true
 concurrency:
   group: ci-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

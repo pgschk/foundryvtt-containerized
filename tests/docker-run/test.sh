@@ -69,7 +69,7 @@ else
   else
     # Only testing for the placeholder application, because we don't expect a successful installation
     # most likely due to no valid $FOUNDRYVTT_DOWNLOAD_URL
-    echo "${OK_STRING} Testing only for reachable webserver, not for FoundryVTT installation..."
+    echo -e "${OK_STRING} Testing only for reachable webserver, not for FoundryVTT installation..."
     sleep 10
     curl -so /dev/null http://localhost:8080
     if [ "$?" -ne "0" ]; then
