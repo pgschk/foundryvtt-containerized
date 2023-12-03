@@ -9,7 +9,7 @@ cd $SCRIPTPATH
 
 set -e  # fail whenever a cmd fails
 if [ -z $(command -v docker) ]; then
-  echo -e "${FAIL_STRING} docker binary not found."
+  echo -e "${FAIL_STRING} docker binary not found"
   exit 127
 fi
 
@@ -23,16 +23,27 @@ function cleanup {
     docker stop ${container}
   fi
   echo -e "${OK_STRING} Removing temporary directory"
-  rm -R ${TEMPDIR}
+  rm -Rf ${TEMPDIR}
     echo -e "${OK_STRING} Done"
 }
 trap cleanup EXIT
 
-docker buildx build --no-cache -t pgschk/foundryvtt-containerized:${INSTALL_ID} ../..
+if [ -z ${FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE} ]; then
+  echo -e "${OK_STRING} Building into pgschk/foundryvtt-containerized:${INSTALL_ID}..."
+  docker buildx build --no-cache -t pgschk/foundryvtt-containerized:${INSTALL_ID} ../..
+  IMAGE_NAME=pgschk/foundryvtt-containerized:${INSTALL_ID}
+else
+  echo -e "${OK_STRING} Using existing image ${FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE}"
+  IMAGE_NAME=${FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE}
+fi
+
+if [ -z ${IMAGE_NAME} ]; then
+  echo -e "${FAIL_STRING} No valid docker image identified"
+  exit 128
+fi
 
 cd ${TEMPDIR}
-mkdir install data && chown 1000 install data
-container=$(docker run -d --rm --user 1000:1000 -p 8080:8080 -v ${TEMPDIR}/data:/data/foundry -v ${TEMPDIR}/install:/usr/src/app/foundryvtt -e FOUNDRYVTT_DOWNLOAD_URL="${FOUNDRYVTT_DOWNLOAD_URL}" pgschk/foundryvtt-containerized:${INSTALL_ID})
+container=$(docker run -d --rm --user $UID -p 8080:8080 -v ${TEMPDIR}/data:/data/foundry -v ${TEMPDIR}/install:/usr/src/app/foundryvtt -e FOUNDRYVTT_DOWNLOAD_URL="${FOUNDRYVTT_DOWNLOAD_URL}" ${IMAGE_NAME})
 if [ "$?" -ne "0" ]; then
   echo -e "${FAIL_STRING} Error":
   echo $container
