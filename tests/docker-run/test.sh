@@ -56,7 +56,7 @@ if [ "$?" -ne "0" ]; then
   echo -e "${FAIL_STRING} Error":
   echo $container
 else
-  if [ "${FOUNDRYVTT_CONTAINERIZED_INSTALL_SUCCESS_EXPECTED}" == "true" ]; then
+  if [ "${INSTALL_SUCCESSFULL_EXPECTED}" == "true" ]; then
     echo -e "${OK_STRING} Testing for successful FoundryVTT installation..."
     sleep 20
     curl -so /dev/null --fail-with-body http://localhost:8080/api/status &> /dev/null
