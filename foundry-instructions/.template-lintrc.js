@@ -2,7 +2,7 @@
 
 module.exports = {
   extends: 'recommended',
-  rules: {
+rules: {
     'no-whitespace-for-layout': false,
   },
 };
