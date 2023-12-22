@@ -43,7 +43,6 @@ Go to [examples/docker-compose](./examples/docker-compose/) and edit `.env` to s
 
 Afterwards run
 ```
-mkdir install data && chown 1000 install data
 docker compose up -d
 ```
 
