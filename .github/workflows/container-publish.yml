@@ -64,6 +64,7 @@ jobs:
             ./Dockerfile
           extra-args: |
             --pull
+            --ulimit nofile=4096:4096
 
       - name: Echo Outputs
         run: |
