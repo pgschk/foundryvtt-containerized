@@ -1,5 +1,6 @@
 name: Daily Vulnerability Scan
 on:
+  workflow_dispatch:
   schedule:
     - cron: '40 15 * * *'
 jobs:
