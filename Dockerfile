@@ -1,6 +1,7 @@
-ARG NODE_HASH=d016f19a31ac259d78dc870b4c78132cf9e52e89339ff319bdd9999912818f4a
+ARG NODE_HASH=e96618520c7db4c3e082648678ab72a49b73367b9a1e7884cf75ac30a198e454
+# node:20-alpine@sha256:e96618520c7db4c3e082648678ab72a49b73367b9a1e7884cf75ac30a198e454 (Alpine 3.19.0)
 
-FROM node:20-alpine@sha256:${NODE_HASH} as builder
+FROM node:20-alpine@sha256:${NODE_HASH} AS builder
 
 WORKDIR /usr/src/app
 ADD foundry-instructions foundry-instructions
