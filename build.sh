@@ -12,4 +12,4 @@ fi
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 cd $SCRIPTPATH
 
-docker buildx build -t pgschk/foundryvtt-containerized:${TAG} .
+docker buildx build --load -t pgschk/foundryvtt-containerized:${TAG} .
