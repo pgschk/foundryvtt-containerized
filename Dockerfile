@@ -1,5 +1,5 @@
-ARG NODE_HASH=e96618520c7db4c3e082648678ab72a49b73367b9a1e7884cf75ac30a198e454
-# node:20-alpine@sha256:e96618520c7db4c3e082648678ab72a49b73367b9a1e7884cf75ac30a198e454 (Alpine 3.19.0)
+ARG NODE_HASH=bf77dc26e48ea95fca9d1aceb5acfa69d2e546b765ec2abfb502975f1a2d4def
+# node:20-alpine@sha256:bf77dc26e48ea95fca9d1aceb5acfa69d2e546b765ec2abfb502975f1a2d4def (Alpine 3.19.1)
 
 FROM node:20-alpine@sha256:${NODE_HASH} AS builder
 
