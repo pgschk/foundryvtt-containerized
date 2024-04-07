@@ -37,7 +37,7 @@ trap cleanup EXIT
 
 if [ -z ${FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE} ]; then
   echo -e "${OK_STRING} Building into pgschk/foundryvtt-containerized:${INSTALL_ID}..."
-  docker buildx build --no-cache -t pgschk/foundryvtt-containerized:${INSTALL_ID} ../..
+  docker buildx build --load --no-cache -t pgschk/foundryvtt-containerized:${INSTALL_ID} ../..
   IMAGE_NAME=pgschk/foundryvtt-containerized:${INSTALL_ID}
 else
   echo -e "${OK_STRING} Using existing image ${FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE}"
