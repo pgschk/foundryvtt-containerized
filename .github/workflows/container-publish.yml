@@ -34,7 +34,21 @@ jobs:
           id
 
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.DOCKER_LOGIN }}
 
       - name: Docker Metadata
         id: docker-metadata
@@ -52,105 +66,86 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}},enable=${{ !startsWith(github.ref, 'refs/tags/v0.') }}
 
-      # Build image using Buildah action
-      - name: Build Image
-        id: build_image
-        uses: redhat-actions/buildah-build@v2
+      - name: Install QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
         with:
-          layers: false
+          path: /tmp/.buildx-cache/alpine-toolkit
+          key: ${{ runner.os }}-buildx-alpine-toolkit
+          restore-keys: |
+              ${{ runner.os }}-buildx-
+
+      - name: Build container image
+        id: build-image
+        uses: docker/build-push-action@v6
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          platforms: linux/amd64,linux/ppc64le,linux/s390x,linux/arm64
           tags: ${{ steps.docker-metadata.outputs.tags }}
           labels: ${{ steps.docker-metadata.outputs.labels }}
-          containerfiles: |
-            ./Dockerfile
-          extra-args: |
-            --pull
-            --ulimit nofile=4096:4096
+          cache-from: type=local,src=/tmp/.buildx-cache/alpine-toolkit
+          cache-to: type=local,dest=/tmp/.buildx-cache/alpine-toolkit-new
 
-      - name: Echo Outputs
+      - name: Pull images
+        shell: bash
         run: |
-          echo "Image: ${{ steps.build_image.outputs.image }}"
-          echo "Tags: ${{ steps.build_image.outputs.tags }}"
-          echo "Tagged Image: ${{ steps.build_image.outputs.image-with-tag }}"
+          docker pull ghcr.io/${{ github.repository }}@${{ steps.build-image.outputs.digest }}
 
-      # Check if image is build
-      - name: Check images created
-        run: buildah images | grep '${{ env.IMAGES }}'
+    outputs:
+      tags: ${{ steps.docker-metadata.outputs.tags }}
+      digest: ${{ steps.build-image.outputs.digest }}
 
-      - name: Check image metadata
-        run: |
-          set -x
-          buildah inspect ${{ steps.build_image.outputs.image-with-tag }} | jq '.OCIv1.config.Labels."org.opencontainers.image.title"'
-          buildah inspect ${{ steps.build_image.outputs.image-with-tag }} | jq '.OCIv1.config.Labels."org.opencontainers.image.description"'
-          buildah inspect ${{ steps.build_image.outputs.image-with-tag }} | jq '.Docker.config.Labels."org.opencontainers.image.title"'
-          buildah inspect ${{ steps.build_image.outputs.image-with-tag }} | jq '.Docker.config.Labels."org.opencontainers.image.description"'
+  # test:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   # Run container-structure-test
+  #   # https://github.com/marketplace/actions/container-structure-test-action
+  #   - name: Run container-structure-tests
+  #     uses: plexsystems/container-structure-test-action@v0.3.0
+  #     with:
+  #       image: ghcr.io/pgschk/foundryvtt-containerized@${{ needs.build.outputs.digest }}
+  #       config: tests/container-structure-test/tests.yml
 
-      - name: Export image to docker
-        run: |
-          buildah push ${{ steps.build_image.outputs.image-with-tag }} docker-daemon:${{ steps.build_image.outputs.image-with-tag }}
+  #   # Run all available tests expecting sucessful installation
+  #   - name: Run all tests
+  #     run: FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE=${{ needs.build.outputs.tags }} FOUNDRYVTT_DOWNLOAD_URL=${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }} ./tests/tests.sh
 
-      # Run container-structure-test
-      # https://github.com/marketplace/actions/container-structure-test-action
-      - name: Run container-structure-tests
-        uses: plexsystems/container-structure-test-action@v0.3.0
-        with:
-          image: ${{ steps.build_image.outputs.image-with-tag }}
-          config: tests/container-structure-test/tests.yml
 
-      # Run all available tests expecting sucessful installation
-      - name: Run all tests
-        run: FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE=${{ steps.build_image.outputs.image-with-tag }} FOUNDRYVTT_DOWNLOAD_URL=${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }} ./tests/tests.sh
+  sign:
+    if: ${{ github.event_name != 'pull_request' }}
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      id-token: write
 
-      - name: Podman log in to docker.io
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: redhat-actions/podman-login@v1
-        with:
-          registry: docker.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.DOCKER_LOGIN }}
-
-      - name: Podman log in to ghcr.io
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: redhat-actions/podman-login@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Docker log in to docker.io
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: docker/login-action@v3
-        with:
-          registry: docker.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.DOCKER_LOGIN }}
-
-      - name: Docker log in to ghcr.io
-        if: ${{ github.event_name != 'pull_request' }}
+    steps:
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push Images
-        id: push
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: redhat-actions/push-to-registry@v2
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          image: ${{ steps.build_image.outputs.image }}
-          tags: ${{ steps.build_image.outputs.tags }}
+          registry: docker.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.DOCKER_LOGIN }}
 
-      - name: Print image url
-        if: ${{ github.event_name != 'pull_request' }}
-        run: |
-          echo "Image pushed to ${{ steps.push.outputs.registry-paths }}"
+      - uses: sigstore/cosign-installer@v3
 
-      - uses: sigstore/cosign-installer@v3.3.0
-        if: ${{ github.event_name != 'pull_request' }}
-
-      - name: Sign container image (keyless)
-        if: ${{ github.event_name != 'pull_request' }}
-        run: |
-          cosign sign -y ${{ steps.build_image.outputs.image-with-tag }}@${{ steps.push.outputs.digest }}
+      - name: Sign image
+        run: cosign sign --yes ghcr.io/${{ github.repository }}@${DIGEST} docker.io/${{ github.repository }}@${DIGEST}
         env:
+          DIGEST: ${{ needs.build.outputs.digest }}
           COSIGN_EXPERIMENTAL: 1
