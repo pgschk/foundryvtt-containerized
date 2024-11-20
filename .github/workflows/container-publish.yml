@@ -109,15 +109,15 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set image ENV
-      shell: bash
-      run: |
-        echo "DOCKER_IMAGE= ghcr.io/${{ github.repository }}:sha-${GITHUB_SHA::7}" >> $GITHUB_ENV
+    # - name: Set image ENV
+    #   shell: bash
+    #   run: |
+    #     echo "DOCKER_IMAGE= ghcr.io/${{ github.repository }}:sha-${GITHUB_SHA::7}" >> $GITHUB_ENV
 
-    - name: Pull image
-      shell: bash
-      run: |
-        docker pull $DOCKER_IMAGE
+    # - name: Pull image
+    #   shell: bash
+    #   run: |
+    #     docker pull $DOCKER_IMAGE
 
     # Run container-structure-test
     # https://github.com/marketplace/actions/container-structure-test-action
@@ -129,7 +129,7 @@ jobs:
 
     # Run all available tests expecting sucessful installation
     - name: Run all tests
-      run: FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE=sha-${GITHUB_SHA::7} FOUNDRYVTT_DOWNLOAD_URL=${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }} ./tests/tests.sh
+      run: FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE=ghcr.io/${{ github.repository }}@${{ needs.build.outputs.digest }} FOUNDRYVTT_DOWNLOAD_URL=${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }} ./tests/tests.sh
 
   sign:
     if: ${{ github.event_name != 'pull_request' }}
