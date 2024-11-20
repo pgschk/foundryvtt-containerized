@@ -119,7 +119,7 @@ jobs:
     - name: Run container-structure-tests
       uses: plexsystems/container-structure-test-action@v0.3.0
       with:
-        image: ghcr.io/pgschk/foundryvtt-containerized:${{ github.sha }}
+        image: ghcr.io/pgschk/foundryvtt-containerized:sha-${GITHUB_SHA::7}
         config: tests/container-structure-test/tests.yml
 
     # Run all available tests expecting sucessful installation
