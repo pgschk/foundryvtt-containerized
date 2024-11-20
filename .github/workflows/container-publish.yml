@@ -112,7 +112,7 @@ jobs:
     - name: Pull image
       shell: bash
       run: |
-        docker pull ghcr.io/${{ github.repository }}:${{ github.sha }}
+        docker pull ghcr.io/${{ github.repository }}:sha-${GITHUB_SHA::7}
 
     # Run container-structure-test
     # https://github.com/marketplace/actions/container-structure-test-action
@@ -124,7 +124,7 @@ jobs:
 
     # Run all available tests expecting sucessful installation
     - name: Run all tests
-      run: FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE=${{ needs.build.outputs.tags }} FOUNDRYVTT_DOWNLOAD_URL=${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }} ./tests/tests.sh
+      run: FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE=sha-${GITHUB_SHA::7} FOUNDRYVTT_DOWNLOAD_URL=${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }} ./tests/tests.sh
 
   sign:
     if: ${{ github.event_name != 'pull_request' }}
