@@ -56,7 +56,7 @@ jobs:
 
       - name: Docker Metadata
         id: docker-metadata
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: |
             ${{ env.IMAGES }}
@@ -106,22 +106,21 @@ jobs:
       tags: ${{ steps.docker-metadata.outputs.tags }}
       digest: ${{ steps.build-image.outputs.digest }}
 
-  # test:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   # Run container-structure-test
-  #   # https://github.com/marketplace/actions/container-structure-test-action
-  #   - name: Run container-structure-tests
-  #     uses: plexsystems/container-structure-test-action@v0.3.0
-  #     with:
-  #       image: ghcr.io/pgschk/foundryvtt-containerized@${{ needs.build.outputs.digest }}
-  #       config: tests/container-structure-test/tests.yml
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    # Run container-structure-test
+    # https://github.com/marketplace/actions/container-structure-test-action
+    - name: Run container-structure-tests
+      uses: plexsystems/container-structure-test-action@v0.3.0
+      with:
+        image: ghcr.io/pgschk/foundryvtt-containerized@${{ needs.build.outputs.digest }}
+        config: tests/container-structure-test/tests.yml
 
-  #   # Run all available tests expecting sucessful installation
-  #   - name: Run all tests
-  #     run: FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE=${{ needs.build.outputs.tags }} FOUNDRYVTT_DOWNLOAD_URL=${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }} ./tests/tests.sh
-
+    # Run all available tests expecting sucessful installation
+    - name: Run all tests
+      run: FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE=${{ needs.build.outputs.tags }} FOUNDRYVTT_DOWNLOAD_URL=${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }} ./tests/tests.sh
 
   sign:
     if: ${{ github.event_name != 'pull_request' }}
