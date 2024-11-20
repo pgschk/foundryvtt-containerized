@@ -56,7 +56,7 @@ jobs:
 
       - name: Docker Metadata
         id: docker-metadata
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: |
             ${{ env.IMAGES }}
@@ -97,31 +97,39 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache/${{ github.repository }}
           cache-to: type=local,dest=/tmp/.buildx-cache/${{ github.repository }}-new
 
-      - name: Pull images
-        shell: bash
-        run: |
-          docker pull ghcr.io/${{ github.repository }}@${{ steps.build-image.outputs.digest }}
-
     outputs:
       tags: ${{ steps.docker-metadata.outputs.tags }}
       digest: ${{ steps.build-image.outputs.digest }}
 
-  # test:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   # Run container-structure-test
-  #   # https://github.com/marketplace/actions/container-structure-test-action
-  #   - name: Run container-structure-tests
-  #     uses: plexsystems/container-structure-test-action@v0.3.0
-  #     with:
-  #       image: ghcr.io/pgschk/foundryvtt-containerized@${{ needs.build.outputs.digest }}
-  #       config: tests/container-structure-test/tests.yml
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
 
-  #   # Run all available tests expecting sucessful installation
-  #   - name: Run all tests
-  #     run: FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE=${{ needs.build.outputs.tags }} FOUNDRYVTT_DOWNLOAD_URL=${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }} ./tests/tests.sh
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
+    # - name: Set image ENV
+    #   shell: bash
+    #   run: |
+    #     echo "DOCKER_IMAGE= ghcr.io/${{ github.repository }}:sha-${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+    - name: Pull image
+      shell: bash
+      run: |
+        docker pull ghcr.io/${{ github.repository }}@${{ needs.build.outputs.digest }}
+
+    # Run container-structure-test
+    # https://github.com/marketplace/actions/container-structure-test-action
+    - name: Run container-structure-tests
+      uses: plexsystems/container-structure-test-action@v0.3.0
+      with:
+        image: ghcr.io/${{ github.repository }}@${{ needs.build.outputs.digest }}
+        config: tests/container-structure-test/tests.yml
+
+    # Run all available tests expecting sucessful installation
+    - name: Run all tests
+      run: FOUNDRYVTT_CONTAINERIZED_EXISTING_IMAGE=ghcr.io/${{ github.repository }}@${{ needs.build.outputs.digest }} FOUNDRYVTT_DOWNLOAD_URL=${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }} ./tests/tests.sh
 
   sign:
     if: ${{ github.event_name != 'pull_request' }}
