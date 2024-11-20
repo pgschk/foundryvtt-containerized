@@ -124,7 +124,7 @@ jobs:
     - name: Run container-structure-tests
       uses: plexsystems/container-structure-test-action@v0.3.0
       with:
-        image: $DOCKER_IMAGE
+        image: ghcr.io/${{ github.repository }}:${{ needs.build.outputs.digest }}
         config: tests/container-structure-test/tests.yml
 
     # Run all available tests expecting sucessful installation
