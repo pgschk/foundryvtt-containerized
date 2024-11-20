@@ -29,24 +29,24 @@ This container provides the necessary [nodejs](https://nodejs.org/) environment 
 
 ### Docker
 
-```
+```sh
 mkdir install data && chown 1000 install data
 docker run  --user 1000:1000 -p 8080:8080 -v ./data:/data/foundry -v ./install:/usr/src/app/foundryvtt -e FOUNDRYVTT_DOWNLOAD_URL="<your-timed-download-url>" pgschk/foundryvtt-containerized:latest
 ```
 
-Visit http://localhost:8080/ to confirm the FoundryVTT Terms of Service and enter your license key.
+Visit <http://localhost:8080/> to confirm the FoundryVTT Terms of Service and enter your license key.
 
 ### Docker Compose
 
 Go to [examples/docker-compose](./examples/docker-compose/) and edit `.env` to set your timed download URL for FoundryVTT.
 
 Afterwards run
-```
+
+```sh
 docker compose up -d
 ```
 
-Visit http://localhost:8080/ to confirm the FoundryVTT Terms of Service and enter your license key.
-
+Visit <http://localhost:8080/> to confirm the FoundryVTT Terms of Service and enter your license key.
 
 ### Kubernetes
 
@@ -54,8 +54,8 @@ Visit http://localhost:8080/ to confirm the FoundryVTT Terms of Service and ente
 - Make sure to set your timed download URL for FoundryVTT as enviroment variable `FOUNDRYVTT_DOWNLOAD_URL`.
 - Start your Kubernetes deployment:
 
-```
+```sh
 kubectl apply -n <target namespace> -f examples/kubernetes/deployment.yaml
 ```
 
-Or use the Helm chart at https://github.com/pgschk/helm-charts/tree/main/charts/foundryvtt-containerized
+Or use the Helm chart at <https://github.com/pgschk/helm-charts/tree/main/charts/foundryvtt-containerized>
