@@ -97,11 +97,6 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache/${{ github.repository }}
           cache-to: type=local,dest=/tmp/.buildx-cache/${{ github.repository }}-new
 
-      - name: Pull image
-        shell: bash
-        run: |
-          docker pull ghcr.io/${{ github.repository }}@${{ steps.build-image.outputs.digest }}
-
     outputs:
       tags: ${{ steps.docker-metadata.outputs.tags }}
       digest: ${{ steps.build-image.outputs.digest }}
@@ -117,14 +112,14 @@ jobs:
     - name: Pull image
       shell: bash
       run: |
-        docker pull ghcr.io/${{ github.repository }}@${{ needs.build.outputs.tags }}
+        docker pull ghcr.io/${{ github.repository }}:${{ github.sha }}
 
     # Run container-structure-test
     # https://github.com/marketplace/actions/container-structure-test-action
     - name: Run container-structure-tests
       uses: plexsystems/container-structure-test-action@v0.3.0
       with:
-        image: ghcr.io/pgschk/foundryvtt-containerized@${{ needs.build.outputs.digest }}
+        image: ghcr.io/pgschk/foundryvtt-containerized:${{ github.sha }}
         config: tests/container-structure-test/tests.yml
 
     # Run all available tests expecting sucessful installation
