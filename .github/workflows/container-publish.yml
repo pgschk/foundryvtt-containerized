@@ -76,8 +76,8 @@ jobs:
       - name: Cache Docker layers
         uses: actions/cache@v4
         with:
-          path: /tmp/.buildx-cache/alpine-toolkit
-          key: ${{ runner.os }}-buildx-alpine-toolkit
+          path: /tmp/.buildx-cache/${{ github.repository }}
+          key: ${{ runner.os }}-buildx-${{ github.repository }}
           restore-keys: |
               ${{ runner.os }}-buildx-
 
@@ -90,8 +90,8 @@ jobs:
           platforms: linux/amd64,linux/ppc64le,linux/s390x,linux/arm64
           tags: ${{ steps.docker-metadata.outputs.tags }}
           labels: ${{ steps.docker-metadata.outputs.labels }}
-          cache-from: type=local,src=/tmp/.buildx-cache/alpine-toolkit
-          cache-to: type=local,dest=/tmp/.buildx-cache/alpine-toolkit-new
+          cache-from: type=local,src=/tmp/.buildx-cache/${{ github.repository }}
+          cache-to: type=local,dest=/tmp/.buildx-cache/${{ github.repository }}-new
 
       - name: Pull images
         shell: bash
