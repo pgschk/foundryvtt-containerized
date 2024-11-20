@@ -15,6 +15,10 @@ env:
     docker.io/pgschk/foundryvtt-containerized
     ghcr.io/pgschk/foundryvtt-containerized
 
+concurrency:
+  group: container-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     strategy:
