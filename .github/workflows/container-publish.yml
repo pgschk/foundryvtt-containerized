@@ -97,7 +97,7 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache/${{ github.repository }}
           cache-to: type=local,dest=/tmp/.buildx-cache/${{ github.repository }}-new
 
-      - name: Pull images
+      - name: Pull image
         shell: bash
         run: |
           docker pull ghcr.io/${{ github.repository }}@${{ steps.build-image.outputs.digest }}
@@ -113,6 +113,11 @@ jobs:
 
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Pull image
+      shell: bash
+      run: |
+        docker pull ghcr.io/${{ github.repository }}@${{ needs.build.outputs.tags }}
 
     # Run container-structure-test
     # https://github.com/marketplace/actions/container-structure-test-action
