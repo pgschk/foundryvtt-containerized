@@ -109,17 +109,22 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Set image ENV
+      shell: bash
+      run: |
+        echo "DOCKER_IMAGE= ghcr.io/${{ github.repository }}:sha-${GITHUB_SHA::7}" >> $GITHUB_ENV
+
     - name: Pull image
       shell: bash
       run: |
-        docker pull ghcr.io/${{ github.repository }}:sha-${GITHUB_SHA::7}
+        docker pull $DOCKER_IMAGE
 
     # Run container-structure-test
     # https://github.com/marketplace/actions/container-structure-test-action
     - name: Run container-structure-tests
       uses: plexsystems/container-structure-test-action@v0.3.0
       with:
-        image: ghcr.io/pgschk/foundryvtt-containerized:sha-${GITHUB_SHA::7}
+        image: $DOCKER_IMAGE
         config: tests/container-structure-test/tests.yml
 
     # Run all available tests expecting sucessful installation
