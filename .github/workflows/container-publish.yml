@@ -110,6 +110,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
     # Run container-structure-test
     # https://github.com/marketplace/actions/container-structure-test-action
     - name: Run container-structure-tests
