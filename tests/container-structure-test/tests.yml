@@ -14,6 +14,6 @@ fileExistenceTests:
 - name: 'Instructions app index'
   path: '/usr/src/app/foundry-instructions/index.html'
   shouldExist: true
-  permissions: '-rw-rw-rw-'
+  permissions: '-rwxrwxrwx'
   uid: 1000
   gid: 0
