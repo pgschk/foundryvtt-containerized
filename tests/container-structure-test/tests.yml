@@ -5,11 +5,11 @@ commandTests:
     args: ["-v"]
     expectedOutput:
     - "v20"
-  - name: "http-server in version 14 installed"
-    command: "http-server"
-    args: ["-v"]
+  - name: darkhttpd in version 1.14 installed"
+    command: "darkhttpd"
+    args: ["--help"]
     expectedOutput:
-    - "v14"
+    - "darkhttpd/1.14"
 fileExistenceTests:
 - name: 'Instructions app index'
   path: '/usr/src/app/foundry-instructions/index.html'
