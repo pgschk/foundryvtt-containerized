@@ -1,15 +1,15 @@
 schemaVersion: 2.0.0
 commandTests:
-  - name: "nodejs in version 20 installed"
+  - name: "nodejs in version 22 installed"
     command: "node"
     args: ["-v"]
     expectedOutput:
-    - "v20"
-  - name: darkhttpd in version 1.14 installed"
+    - "v22"
+  - name: darkhttpd in version 1.16 installed"
     command: "darkhttpd"
     args: ["--help"]
     expectedOutput:
-    - "darkhttpd/1.14"
+    - "darkhttpd/1.16"
 fileExistenceTests:
 - name: 'Instructions app index'
   path: '/usr/src/app/foundry-instructions/index.html'
