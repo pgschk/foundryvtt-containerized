@@ -15,7 +15,7 @@ check_foundryvtt_installation () {
     mkdir -p ${FOUNDRYVTT_INSTALL_PATH}
   fi
 
-  if [ -f "${FOUNDRYVTT_INSTALL_PATH}/resources/app/main.js" ]; then
+  if [ -f "${FOUNDRYVTT_INSTALL_PATH}/main.js" ]; then
     echo "FoundryVTT found in ${FOUNDRYVTT_INSTALL_PATH}"
     return 0
   else
@@ -35,7 +35,7 @@ install_foundryvtt () {
     echo "ERROR: Unable to download FoundryVTT!"
     return
   fi
-  unzip foundryvtt.zip -d ${FOUNDRYVTT_INSTALL_PATH}
+  unzip -o foundryvtt.zip -d ${FOUNDRYVTT_INSTALL_PATH}
   rm foundryvtt.zip
 }
 
@@ -44,7 +44,7 @@ start_foundryvtt () {
       echo "-------------------"
       echo "Starting FoundryVTT"
       echo "-------------------"
-      exec /usr/local/bin/node ${FOUNDRYVTT_INSTALL_PATH}/resources/app/main.js --dataPath=${FOUNDRYVTT_DATA_PATH} --noupnp --port=${FOUNDRYVTT_LISTEN_PORT}
+      exec /usr/local/bin/node ${FOUNDRYVTT_INSTALL_PATH}/main.js --dataPath=${FOUNDRYVTT_DATA_PATH} --noupnp --port=${FOUNDRYVTT_LISTEN_PORT}
 }
 
 main () {
