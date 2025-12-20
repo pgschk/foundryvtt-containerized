@@ -1,0 +1,2 @@
+# nodejs glob vulnurability, long standing in official node image
+CVE-2025-64756
