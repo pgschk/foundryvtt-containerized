@@ -1,2 +1,4 @@
-# nodejs glob vulnurability, long standing in official node image
+# nodejs glob vulnerability, long standing in official node image
 CVE-2025-64756
+# nodejs tar vulnerability
+CVE-2026-23745
