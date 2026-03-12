@@ -1,3 +1,5 @@
+# Alpine zlib
+CVE-2026-22184
 # nodejs glob vulnerability, long standing in official node image
 CVE-2025-64756
 # nodejs tar vulnerabilities
@@ -5,6 +7,8 @@ CVE-2026-23745
 CVE-2026-23950
 CVE-2026-24842
 CVE-2026-26960
+CVE-2026-29786
+CVE-2026-31802
 # nodejs minimatch vulnerabilies
 CVE-2026-26996
 CVE-2026-27903
