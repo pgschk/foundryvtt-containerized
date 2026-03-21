@@ -9,7 +9,9 @@ RUN mkdir -p /usr/src/app/foundryvtt/ /data/foundryvtt/ && \
     chown -R 1000:0 /usr/src/app/ /data/foundryvtt/ && \
     chmod -R ugo+rwX /usr/src/app/ /data/foundryvtt/
 COPY --chown=1000:0 --chmod=0777 foundry-instructions/ /usr/src/app/foundry-instructions
-RUN apk add darkhttpd
+RUN apk upgrade --no-cache && \
+    apk add --no-cache darkhttpd && \
+    npm update -g
 
 USER 1000
 EXPOSE 8080
