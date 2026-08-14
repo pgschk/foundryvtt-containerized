@@ -1,5 +1,5 @@
-ARG NODE_HASH=sha256:9385cd9f3001dfc3431e8ead12c43e9e1f87cc1b9b5c6cfd0f73865d405b27c4
-# node:22-alpine (Alpine 3.23)
+ARG NODE_HASH=sha256:2a49bdf71e9fd965a58c1703fd9ddd205b34e5782b692a72dd1d248abb0beb43
+# node:24-alpine (Alpine 3.24)
 
 FROM node:22-alpine@${NODE_HASH}
 
