@@ -1,7 +1,7 @@
 ARG NODE_HASH=sha256:2a49bdf71e9fd965a58c1703fd9ddd205b34e5782b692a72dd1d248abb0beb43
 # node:24-alpine (Alpine 3.24)
 
-FROM node:22-alpine@${NODE_HASH}
+FROM node:24-alpine@${NODE_HASH}
 
 WORKDIR /usr/src/app
 ADD app/entrypoint.sh entrypoint.sh
