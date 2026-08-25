@@ -42,7 +42,7 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-          version: 0.74.0
+          version: v0.74.0
         env:
           TRIVY_EXIT_ON_EOL: '2'
           TRIVY_DISABLE_VEX_NOTICE: 'true'
