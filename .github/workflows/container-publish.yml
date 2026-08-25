@@ -165,7 +165,6 @@ jobs:
       - name: Github Attestation
         uses: actions/attest@v4
         with:
-          subject-path: "oci://ghcr.io/${{ github.repository }}@${DIGEST}"
+          subject-path: "oci://ghcr.io/${{ github.repository }}@${{ needs.build.outputs.digest }}"
           sbom-path: 'SBOM.json'
-        env:
-          DIGEST: ${{ needs.build.outputs.digest }}
+
