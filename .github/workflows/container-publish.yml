@@ -138,6 +138,7 @@ jobs:
     permissions:
       packages: write
       id-token: write
+      artifact-metadata: write
 
     steps:
       - name: Login to GHCR
@@ -161,3 +162,8 @@ jobs:
         env:
           DIGEST: ${{ needs.build.outputs.digest }}
           COSIGN_EXPERIMENTAL: 1
+      - name: Github Attestation
+        uses: actions/attest@v4
+        with:
+          subject-path: "oci://ghcr.io/${{ github.repository }}@${DIGEST}"
+          sbom-path: 'SBOM.json'
