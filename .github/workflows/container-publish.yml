@@ -167,3 +167,5 @@ jobs:
         with:
           subject-path: "oci://ghcr.io/${{ github.repository }}@${DIGEST}"
           sbom-path: 'SBOM.json'
+        env:
+          DIGEST: ${{ needs.build.outputs.digest }}
