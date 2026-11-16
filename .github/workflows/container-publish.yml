@@ -54,7 +54,7 @@ jobs:
         uses: docker/login-action@v4
         with:
           registry: docker.io
-          username: ${{ github.actor }}
+          username: pgschk
           password: ${{ secrets.DOCKER_LOGIN }}
 
       - name: Docker Metadata
@@ -144,7 +144,7 @@ jobs:
         uses: docker/login-action@v4
         with:
           registry: docker.io
-          username: ${{ github.actor }}
+          username: pgschk
           password: ${{ secrets.DOCKER_LOGIN }}
 
       - uses: sigstore/cosign-installer@v4.1.2
