@@ -1,6 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": [
+    "github>pgschk/renovate-config",
+    "github>pgschk/renovate-config:fast"
+  ],
   "packageRules": [
     {
       "description": "Stay on Node 24 (container-structure-test expects v24)",
