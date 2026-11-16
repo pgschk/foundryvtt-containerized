@@ -4,7 +4,7 @@ ARG NODE_HASH=sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905
 FROM node:24-alpine@${NODE_HASH}
 
 WORKDIR /usr/src/app
-ADD app/entrypoint.sh entrypoint.sh
+COPY app/entrypoint.sh entrypoint.sh
 RUN mkdir -p /usr/src/app/foundryvtt/ /data/foundryvtt/ && \
     chown -R 1000:0 /usr/src/app/ /data/foundryvtt/ && \
     chmod -R ugo+rwX /usr/src/app/ /data/foundryvtt/

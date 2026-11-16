@@ -14,6 +14,8 @@ env:
   IMAGES: |
     docker.io/pgschk/foundryvtt-containerized
     ghcr.io/pgschk/foundryvtt-containerized
+  # Fork PRs get no secrets: build only, skip registry login, push and tests.
+  IS_FORK_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
 
 concurrency:
   group: container-${{ github.head_ref || github.ref }}
@@ -35,12 +37,12 @@ jobs:
       - name: Add mask
         run: |
           echo "::add-mask::${{ secrets.CI_FOUNDRYVTT_DOWNLOAD_URL }}"
-          id
 
       - name: Checkout repository
         uses: actions/checkout@v7
 
       - name: Login to GHCR
+        if: env.IS_FORK_PR != 'true'
         uses: docker/login-action@v4
         with:
           registry: ghcr.io
@@ -48,6 +50,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to Docker Hub
+        if: env.IS_FORK_PR != 'true'
         uses: docker/login-action@v4
         with:
           registry: docker.io
@@ -70,39 +73,28 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}},enable=${{ !startsWith(github.ref, 'refs/tags/v0.') }}
 
-      - name: Install QEMU
-        uses: docker/setup-qemu-action@v4
-
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v4
-
-      - name: Cache Docker layers
-        uses: actions/cache@v6
-        with:
-          path: /tmp/.buildx-cache/${{ github.repository }}
-          key: ${{ runner.os }}-buildx-${{ github.repository }}
-          restore-keys: |
-              ${{ runner.os }}-buildx-
 
       - name: Build container image
         id: build-image
         uses: docker/build-push-action@v7
         with:
           builder: ${{ steps.buildx.outputs.name }}
-          push: true
+          push: ${{ env.IS_FORK_PR != 'true' }}
           platforms: linux/amd64
           tags: ${{ steps.docker-metadata.outputs.tags }}
           labels: ${{ steps.docker-metadata.outputs.labels }}
-          cache-from: type=local,src=/tmp/.buildx-cache/${{ github.repository }}
-          cache-to: type=local,dest=/tmp/.buildx-cache/${{ github.repository }}-new
 
     outputs:
       tags: ${{ steps.docker-metadata.outputs.tags }}
       digest: ${{ steps.build-image.outputs.digest }}
+      pushed: ${{ env.IS_FORK_PR != 'true' }}
 
   test:
     needs: build
+    if: ${{ needs.build.outputs.pushed == 'true' }}
     runs-on: ubuntu-latest
     steps:
 
