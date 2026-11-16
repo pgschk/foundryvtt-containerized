@@ -4,6 +4,7 @@
 # - 127: Docker not found
 # - 128: No valid docker image
 # - 22: No FoundryVTT installation found in container
+# - 1: Container failed to start or webserver not reachable
 
 OK_STRING="\e[42m[OK]\e[0m"
 FAIL_STRING="\e[41m[FAIL]\e[0m"
@@ -51,31 +52,30 @@ fi
 
 cd ${TEMPDIR}
 mkdir -p ${TEMPDIR}/data ${TEMPDIR}/install
-container=$(docker run -d --rm --user $UID -p 8080:8080 -v ${TEMPDIR}/data:/data/foundry -v ${TEMPDIR}/install:/usr/src/app/foundryvtt -e FOUNDRYVTT_DOWNLOAD_URL="${FOUNDRYVTT_DOWNLOAD_URL}" ${IMAGE_NAME})
-if [ "$?" -ne "0" ]; then
-  echo -e "${FAIL_STRING} Error":
-  echo $container
-else
-  if [ "${INSTALL_SUCCESSFULL_EXPECTED}" == "true" ]; then
-    echo -e "${OK_STRING} Testing for successful FoundryVTT installation..."
-    sleep 20
-    curl -so /dev/null --fail-with-body http://localhost:8080/api/status &> /dev/null
-    # Exit code 22 means error 404 on curl, meaning not FoundryVTT installation success
-    if [ "$?" -ne "0" ]; then
-      echo -e "${FAIL_STRING} Container webserver not reachable"
-    else
-      echo -e "${OK_STRING} Container webserver reachable"
-    fi
-  else
-    # Only testing for the placeholder application, because we don't expect a successful installation
-    # most likely due to no valid $FOUNDRYVTT_DOWNLOAD_URL
-    echo -e "${OK_STRING} Testing only for reachable webserver, not for FoundryVTT installation..."
-    sleep 20
-    curl -so /dev/null http://localhost:8080
-    if [ "$?" -ne "0" ]; then
-      echo -e "${FAIL_STRING} Container webserver not reachable"
-    else
-      echo -e "${OK_STRING} Container webserver reachable"
-    fi
+if ! container=$(docker run -d --rm --user $UID -p 8080:8080 -v ${TEMPDIR}/data:/data/foundryvtt -v ${TEMPDIR}/install:/usr/src/app/foundryvtt -e FOUNDRYVTT_DOWNLOAD_URL="${FOUNDRYVTT_DOWNLOAD_URL}" ${IMAGE_NAME}); then
+  echo -e "${FAIL_STRING} Error starting container:"
+  echo "$container"
+  container=""
+  exit 1
+fi
+
+if [ "${INSTALL_SUCCESSFULL_EXPECTED}" == "true" ]; then
+  echo -e "${OK_STRING} Testing for successful FoundryVTT installation..."
+  sleep 20
+  # /api/status only exists in FoundryVTT, not in the instructions app
+  if ! curl -so /dev/null --fail-with-body http://localhost:8080/api/status &> /dev/null; then
+    echo -e "${FAIL_STRING} FoundryVTT not reachable"
+    exit 22
   fi
+  echo -e "${OK_STRING} FoundryVTT reachable"
+else
+  # Only testing for the placeholder application, because we don't expect a successful installation
+  # most likely due to no valid $FOUNDRYVTT_DOWNLOAD_URL
+  echo -e "${OK_STRING} Testing only for reachable webserver, not for FoundryVTT installation..."
+  sleep 20
+  if ! curl -so /dev/null http://localhost:8080; then
+    echo -e "${FAIL_STRING} Container webserver not reachable"
+    exit 1
+  fi
+  echo -e "${OK_STRING} Container webserver reachable"
 fi

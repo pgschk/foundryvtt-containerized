@@ -31,7 +31,7 @@ This container provides the necessary [nodejs](https://nodejs.org/) environment 
 
 ```sh
 mkdir install data && chown 1000 install data
-docker run  --user 1000:1000 -p 8080:8080 -v ./data:/data/foundry -v ./install:/usr/src/app/foundryvtt -e FOUNDRYVTT_DOWNLOAD_URL="<your-timed-download-url>" pgschk/foundryvtt-containerized:latest
+docker run  --user 1000:1000 -p 8080:8080 -v ./data:/data/foundryvtt -v ./install:/usr/src/app/foundryvtt -e FOUNDRYVTT_DOWNLOAD_URL="<your-timed-download-url>" pgschk/foundryvtt-containerized:latest
 ```
 
 Visit <http://localhost:8080/> to confirm the FoundryVTT Terms of Service and enter your license key.
