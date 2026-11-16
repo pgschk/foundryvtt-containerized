@@ -1,7 +1,5 @@
-ARG NODE_HASH=sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1
-# node:24-alpine (Alpine 3.24)
-
-FROM node:24-alpine@${NODE_HASH}
+# Digest is kept up to date by Renovate
+FROM node:24-alpine@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1
 
 WORKDIR /usr/src/app
 COPY app/entrypoint.sh entrypoint.sh
