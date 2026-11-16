@@ -6,16 +6,9 @@
   ],
   "packageRules": [
     {
-      "description": "Stay on Node 24 (container-structure-test expects v24)",
+      "description": "Auto-merge base image digest updates once CI passes; Alpine minor releases (new Node.js versions) stay PRs for review",
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["node"],
-      "matchUpdateTypes": ["major"],
-      "enabled": false
-    },
-    {
-      "description": "Auto-merge base image digest updates once CI passes",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["node"],
+      "matchPackageNames": ["alpine"],
       "matchUpdateTypes": ["digest"],
       "automerge": true
     }
