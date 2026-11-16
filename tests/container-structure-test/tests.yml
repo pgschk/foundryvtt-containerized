@@ -5,7 +5,7 @@ commandTests:
     args: ["-v"]
     expectedOutput:
     - "v24"
-  - name: darkhttpd in version 1.17 installed"
+  - name: "darkhttpd in version 1.17 installed"
     command: "darkhttpd"
     args: ["--help"]
     expectedOutput:
@@ -14,6 +14,30 @@ fileExistenceTests:
 - name: 'Instructions app index'
   path: '/usr/src/app/foundry-instructions/index.html'
   shouldExist: true
-  permissions: '-rwxrwxrwx'
+  permissions: '-rw-r--r--'
+  uid: 0
+  gid: 0
+- name: 'FoundryVTT install dir'
+  path: '/usr/src/app/foundryvtt'
+  shouldExist: true
+  permissions: 'drwxrwx---'
   uid: 1000
   gid: 0
+- name: 'FoundryVTT data dir'
+  path: '/data/foundryvtt'
+  shouldExist: true
+  permissions: 'drwxrwx---'
+  uid: 1000
+  gid: 0
+- name: 'tini'
+  path: '/sbin/tini'
+  shouldExist: true
+- name: 'No npm'
+  path: '/usr/bin/npm'
+  shouldExist: false
+- name: 'No npm (node image location)'
+  path: '/usr/local/bin/npm'
+  shouldExist: false
+- name: 'No yarn'
+  path: '/usr/local/bin/yarn'
+  shouldExist: false

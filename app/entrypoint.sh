@@ -7,12 +7,12 @@ FOUNDRYVTT_INSTALL_PATH=${FOUNDRYVTT_INSTALL_PATH:=/usr/src/app/foundryvtt}
 
 echo "THIS CONTAINERIZATION PROJECT IS NOT AFFILIATED WITH FoundryVTT.com and DOES NOT CONTAIN FoundryVTT ITSELF!"
 
-## check_foundryvtt_installation will look for resources/app/main.js in $FOUNDRYVTT_INSTALL_PATH.
+## check_foundryvtt_installation will look for main.js in $FOUNDRYVTT_INSTALL_PATH.
 check_foundryvtt_installation () {
   if [ ! -d "$FOUNDRYVTT_INSTALL_PATH" ]; then
     echo "WARNING: ${FOUNDRYVTT_INSTALL_PATH} does not exist. Creating directory, but the installation will most likely not be persisted."
     echo "Set \$FOUNDRYVTT_INSTALL_PATH to a directory that is a mounted volume."
-    mkdir -p ${FOUNDRYVTT_INSTALL_PATH}
+    mkdir -p "$FOUNDRYVTT_INSTALL_PATH"
   fi
 
   if [ -f "${FOUNDRYVTT_INSTALL_PATH}/main.js" ]; then
@@ -24,35 +24,36 @@ check_foundryvtt_installation () {
 }
 
 ## install_foundryvtt will install FoundryVTT from a timed download URL
-## obtained from FoundryVTT.com and provided through ENV $FOUNDRYVTT_DOWNLOAD_URL
+## obtained from FoundryVTT.com and provided through ENV $FOUNDRYVTT_DOWNLOAD_URL.
+## The URL is tied to a license, so it is never printed.
 install_foundryvtt () {
-  if [ "${FOUNDRYVTT_DOWNLOAD_URL}" = "" ]; then
+  if [ -z "$FOUNDRYVTT_DOWNLOAD_URL" ]; then
     return
   fi
-  echo "Installing FoundryVTT from URL ${FOUNDRYVTT_DOWNLOAD_URL}..."
-  wget -O foundryvtt.zip ${FOUNDRYVTT_DOWNLOAD_URL}
-  if [ $? -ne 0 ]; then
+  echo "Installing FoundryVTT from the timed download URL..."
+  zip=$(mktemp)
+  if ! wget -q -O "$zip" "$FOUNDRYVTT_DOWNLOAD_URL"; then
     echo "ERROR: Unable to download FoundryVTT!"
+    rm -f "$zip"
     return
   fi
-  unzip -o foundryvtt.zip -d ${FOUNDRYVTT_INSTALL_PATH}
-  rm foundryvtt.zip
+  unzip -o -q "$zip" -d "$FOUNDRYVTT_INSTALL_PATH"
+  rm -f "$zip"
 }
 
 start_foundryvtt () {
-      ## Start FoundryVTT
-      echo "-------------------"
-      echo "Starting FoundryVTT"
-      echo "-------------------"
-      exec /usr/local/bin/node ${FOUNDRYVTT_INSTALL_PATH}/main.js --dataPath=${FOUNDRYVTT_DATA_PATH} --noupnp --port=${FOUNDRYVTT_LISTEN_PORT}
+  echo "-------------------"
+  echo "Starting FoundryVTT"
+  echo "-------------------"
+  exec node "${FOUNDRYVTT_INSTALL_PATH}/main.js" --dataPath="$FOUNDRYVTT_DATA_PATH" --noupnp --port="$FOUNDRYVTT_LISTEN_PORT"
 }
 
 main () {
   ## Data dir exists?
   if [ ! -d "$FOUNDRYVTT_DATA_PATH" ]; then
     echo "WARNING: ${FOUNDRYVTT_DATA_PATH} does not exist. Creating directory, but your data will most likely not be persisted."
-    echo "Set $FOUNDRYVTT_DATA_PATH to a directory that is a mounted volume."
-    mkdir -p ${FOUNDRYVTT_DATA_PATH}
+    echo "Set \$FOUNDRYVTT_DATA_PATH to a directory that is a mounted volume."
+    mkdir -p "$FOUNDRYVTT_DATA_PATH"
   fi
 
   if ! check_foundryvtt_installation; then
@@ -60,15 +61,10 @@ main () {
     if ! check_foundryvtt_installation; then
       # Installation did not succeed, display instructions website instead.
       echo "ERROR: FoundryVTT installation failed! Starting webserver to provide instructions."
-      darkhttpd /usr/src/app/foundry-instructions/
-    else
-      ## Start FoundryVTT
-      start_foundryvtt
+      exec darkhttpd /usr/src/app/foundry-instructions/ --port "$FOUNDRYVTT_LISTEN_PORT"
     fi
-  else
-    ## Start FoundryVTT
-    start_foundryvtt
   fi
+  start_foundryvtt
 }
 
 main

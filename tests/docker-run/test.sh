@@ -52,18 +52,23 @@ fi
 
 cd ${TEMPDIR}
 mkdir -p ${TEMPDIR}/data ${TEMPDIR}/install
-if ! container=$(docker run -d --rm --user $UID -p 8080:8080 -v ${TEMPDIR}/data:/data/foundryvtt -v ${TEMPDIR}/install:/usr/src/app/foundryvtt -e FOUNDRYVTT_DOWNLOAD_URL="${FOUNDRYVTT_DOWNLOAD_URL}" ${IMAGE_NAME}); then
+# Publish on a random free host port, so tests don't collide with anything on 8080
+if ! container=$(docker run -d --rm --user $UID -p 127.0.0.1::8080 -v ${TEMPDIR}/data:/data/foundryvtt -v ${TEMPDIR}/install:/usr/src/app/foundryvtt -e FOUNDRYVTT_DOWNLOAD_URL="${FOUNDRYVTT_DOWNLOAD_URL}" ${IMAGE_NAME}); then
   echo -e "${FAIL_STRING} Error starting container:"
   echo "$container"
   container=""
   exit 1
 fi
+PORT=$(docker port "$container" 8080/tcp | head -n1 | cut -d: -f2)
+echo -e "${OK_STRING} Container listening on localhost:${PORT}"
+
+# Retry until the server answers successfully: up to 60 x 2s, enough for download and unzip
+CURL_RETRY=(--retry 60 --retry-delay 2 --retry-all-errors --max-time 10)
 
 if [ "${INSTALL_SUCCESSFULL_EXPECTED}" == "true" ]; then
   echo -e "${OK_STRING} Testing for successful FoundryVTT installation..."
-  sleep 20
   # /api/status only exists in FoundryVTT, not in the instructions app
-  if ! curl -so /dev/null --fail-with-body http://localhost:8080/api/status &> /dev/null; then
+  if ! curl -so /dev/null --fail "${CURL_RETRY[@]}" "http://localhost:${PORT}/api/status"; then
     echo -e "${FAIL_STRING} FoundryVTT not reachable"
     exit 22
   fi
@@ -72,10 +77,20 @@ else
   # Only testing for the placeholder application, because we don't expect a successful installation
   # most likely due to no valid $FOUNDRYVTT_DOWNLOAD_URL
   echo -e "${OK_STRING} Testing only for reachable webserver, not for FoundryVTT installation..."
-  sleep 20
-  if ! curl -so /dev/null http://localhost:8080; then
+  if ! curl -so /dev/null --fail "${CURL_RETRY[@]}" "http://localhost:${PORT}/"; then
     echo -e "${FAIL_STRING} Container webserver not reachable"
     exit 1
   fi
   echo -e "${OK_STRING} Container webserver reachable"
 fi
+
+# The server must stop on SIGTERM instead of being killed after docker's 10s timeout
+stop_start=$(date +%s)
+docker stop "$container" > /dev/null
+container=""
+stop_time=$(( $(date +%s) - stop_start ))
+if [ "$stop_time" -ge 9 ]; then
+  echo -e "${FAIL_STRING} Container took ${stop_time}s to stop, it ignores SIGTERM"
+  exit 1
+fi
+echo -e "${OK_STRING} Container stopped in ${stop_time}s"
